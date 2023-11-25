@@ -1,14 +1,19 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import { hindiUnicodes, englishUnicode } from "./engine/charmap";
+import { engToHindi } from "./engine/utilities/eng_to_hindi_mapping";
 
 function App() {
-  const sentence = "hi linkedin, this is engine boilerplate";
+  const sentence = "गूगल";
   const [currIndex, setCurrIndex] = useState(0);
   const [userFeedback, setUserFeedBack] = useState("");
+  const map = engToHindi(englishUnicode, hindiUnicodes);
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      if (event.key == sentence[currIndex]) {
+      console.log(event.key)
+      console.log(map.get(event.key))
+      if (map.get(event.key) === sentence[currIndex]) {
         setUserFeedBack("correct");
         setCurrIndex((idx) => idx + 1);
       } else {
@@ -24,13 +29,16 @@ function App() {
   }, [currIndex]);
 
   return (
-    <div style={{
-      height: "100%",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "space-around",
-      alignItems: "center"
-    }}>
+    <div
+      style={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-around",
+        alignItems: "center",
+        // backgroundColor: "grey"
+      }}
+    >
       <div
         style={{
           display: "flex",
