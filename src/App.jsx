@@ -1,9 +1,56 @@
-import React from "react";
+import React, { useRef } from "react";
 import { useState, useEffect } from "react";
 import { hindiUnicodes, englishUnicode } from "./engine/charmap";
 import { engToHindi } from "./engine/utilities/eng_to_hindi_mapping";
 
-function App() {
+const inputStyle = {
+  opacity: "1",
+};
+
+function App({ text }) {
+  const inputRef = useRef();
+  const [textfield, setTextField] = useState("");
+  const [indexNumber, setIndexNumber] = useState(Number(0));
+  const [status, setStatus] = useState("");
+  const [finalOutput, setFinalOutput] = useState("")
+
+  function spacePressed(key) {
+  if (key.code === "Space" && indexNumber < text.length-1) {
+      setTextField("");
+      setIndexNumber((idx) => idx + 1);
+    } else if (textfield.length === 0 && indexNumber > 0 &&  key.code === "Backspace") {
+      setIndexNumber((idx) => idx - 1);
+    }
+  }
+
+  useEffect(() => {
+    if (textfield !== '') {
+      if (text[indexNumber].startsWith(textfield)) {
+        setStatus(true);
+        setFinalOutput(textfield)
+      } else setStatus(false);
+    }
+  }, [textfield]);
+
+  return (
+    <div>
+      <input
+        style={inputStyle}
+        ref={inputRef}
+        name="text"
+        value={textfield}
+        onChange={(value) => setTextField(value.target.value)}
+        onKeyUpCapture={spacePressed}
+        autoFocus
+      ></input>
+      {/* {text.map((word, i) => <span key={i}>{word} </span>)} */}
+      <h1>{status === true ? "Correct" : "Wrong"}</h1>
+      <h1>{finalOutput}</h1>
+    </div>
+  );
+}
+
+function Appp() {
   const sentence = "गूगल";
   const [currIndex, setCurrIndex] = useState(0);
   const [userFeedback, setUserFeedBack] = useState("");
@@ -11,8 +58,8 @@ function App() {
 
   useEffect(() => {
     const handleKeyPress = (event) => {
-      console.log(event.key)
-      console.log(map.get(event.key))
+      console.log(event.key);
+      console.log(map.get(event.key));
       if (map.get(event.key) === sentence[currIndex]) {
         setUserFeedBack("correct");
         setCurrIndex((idx) => idx + 1);
